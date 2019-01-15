@@ -8,6 +8,7 @@
  */
 package com.mitchellbosecke.pebble;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import com.mitchellbosecke.pebble.error.PebbleException;
@@ -20,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
 
-public class WhitespaceControlTest {
+public class WhitespaceControlTest extends PebbleTest {
 
   @Test
   public void testStandardizationOfNewlineCharacters() throws PebbleException, IOException {
@@ -176,4 +177,14 @@ public class WhitespaceControlTest {
     assertEquals("<li>{{ bar }}</li>", writer.toString());
   }
 
+  @Test
+  public void variableAtEndOfLine() throws PebbleException, IOException {  
+	String expectedOutput = super.getExpectedOutput("WhitespaceControlTest.variableAtEndOfLine.txt");
+    PebbleEngine pebble = new PebbleEngine.Builder().strictVariables(false).build();
+    PebbleTemplate template = pebble.getTemplate("templates/template.whitespacecontrol.variableAtEndOfLine.peb");
+    Writer writer = new StringWriter();
+    template.evaluate(writer);
+    System.out.println(writer.toString());
+    assertThat(writer.toString()).contains(expectedOutput);
+  }
 }
